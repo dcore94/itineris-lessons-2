@@ -16,7 +16,7 @@ getToken <- function() {
 }
 
 # Auth code
-pwd = clear('Password to login')
+pwd = askForPassword(prompt='Password to login')
 jwt = getToken()
 
 catalogue = "https://api.d4science.org/catalogue"
