@@ -46,14 +46,16 @@ for reg in regioni:
     dfprovincia = dfregione.groupby("Provincia")["Provincia"].count()
     createPlot(reg, dfprovincia)
 
-print("Checking for bounds")
-if len(sys.argv) == 5:
+print("Checking for bounds and Regione")
+bounds = [[46.62115209225544, 5.669698244577547], [36.04096044837196, 21.97861416589663]]
+region = None
+if len(sys.argv) == 2:
+    region = sys.argv[1]
+    print("Region is: ", region)
+elif len(sys.argv) == 5:
     bounds = [ sys.argv[1:3], sys.argv[3:5] ]
     bounds = [[ float(x) for x in bounds[0]], [ float(x) for x in bounds[1]] ]
     print("Bounds are: ", bounds)
-else:
-    # Whole Italy
-    bounds = [[46.62115209225544, 5.669698244577547], [36.04096044837196, 21.97861416589663]]
 
 # Create the map with Folium API
 themap = folium.Map(zoom_start=10)
@@ -70,7 +72,8 @@ M = df["Anno inserimento"].max()
 print("Rendering map")
 for i in range(len(locations)):
     loc = locations[i]
-    if isInBounds(loc, bounds):
+    reg = df["Regione"][i]
+    if isInBounds(loc, bounds) and (region == None or region == reg):
         color = ageToColor(df["Anno inserimento"][i], m, M)
         icon = folium.Icon(color=color, fill_color=color)
         marker = folium.Marker([loc[0], loc[1]], icon=icon)
